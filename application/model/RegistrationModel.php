@@ -13,71 +13,57 @@ class RegistrationModel
      *
      * @return boolean Gives back the success status of the registration
      */
-    public static function registerNewUser()
-    {
-        // clean the input
-        $user_name = strip_tags(Request::post('user_name'));
-        $user_email = strip_tags(Request::post('user_email'));
-        $user_email_repeat = strip_tags(Request::post('user_email_repeat'));
-        $user_password_new = Request::post('user_password_new');
-        $user_password_repeat = Request::post('user_password_repeat');
+public static function registerNewUser()
+{
+    // clean the input
+    $user_name = strip_tags(Request::post('user_name'));
+    $user_email = strip_tags(Request::post('user_email'));
+    $user_email_repeat = strip_tags(Request::post('user_email_repeat'));
+    $user_password_new = Request::post('user_password_new');
+    $user_password_repeat = Request::post('user_password_repeat');
 
-        // stop registration flow if registrationInputValidation() returns false (= anything breaks the input check rules)
-        $validation_result = self::registrationInputValidation(Request::post('captcha'), $user_name, $user_password_new, $user_password_repeat, $user_email, $user_email_repeat);
-        if (!$validation_result) {
-            return false;
-        }
+    // validation without captcha
+    $validation_result = self::registrationInputValidation(
+        $user_name,
+        $user_password_new,
+        $user_password_repeat,
+        $user_email,
+        $user_email_repeat
+    );
 
-        // crypt the password with the PHP 5.5's password_hash() function, results in a 60 character hash string.
-        // @see php.net/manual/en/function.password-hash.php for more, especially for potential options
-        $user_password_hash = password_hash($user_password_new, PASSWORD_DEFAULT);
-
-        // make return a bool variable, so both errors can come up at once if needed
-        $return = true;
-
-        // check if username already exists
-        if (UserModel::doesUsernameAlreadyExist($user_name)) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_ALREADY_TAKEN'));
-            $return = false;
-        }
-
-        // check if email already exists
-        if (UserModel::doesEmailAlreadyExist($user_email)) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_USER_EMAIL_ALREADY_TAKEN'));
-            $return = false;
-        }
-
-        // if Username or Email were false, return false
-        if (!$return) return false;
-
-        // generate random hash for email verification (40 bytes)
-        $user_activation_hash = bin2hex(random_bytes(40));
-
-        // write user data to database
-        if (!self::writeNewUserToDatabase($user_name, $user_password_hash, $user_email, time(), $user_activation_hash)) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_CREATION_FAILED'));
-            return false; // no reason not to return false here
-        }
-
-        // get user_id of the user that has been created, to keep things clean we DON'T use lastInsertId() here
-        $user_id = UserModel::getUserIdByUsername($user_name);
-
-        if (!$user_id) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_UNKNOWN_ERROR'));
-            return false;
-        }
-
-        // send verification email
-        if (self::sendVerificationEmail($user_id, $user_email, $user_activation_hash)) {
-            Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED'));
-            return true;
-        }
-
-        // if verification email sending failed: instantly delete the user
-        self::rollbackRegistrationByUserId($user_id);
-        Session::add('feedback_negative', Text::get('FEEDBACK_VERIFICATION_MAIL_SENDING_FAILED'));
+    if (!$validation_result) {
         return false;
     }
+
+    $user_password_hash = password_hash($user_password_new, PASSWORD_DEFAULT);
+
+    $return = true;
+
+    if (UserModel::doesUsernameAlreadyExist($user_name)) {
+        Session::add('feedback_negative', Text::get('FEEDBACK_USERNAME_ALREADY_TAKEN'));
+        $return = false;
+    }
+
+    if (UserModel::doesEmailAlreadyExist($user_email)) {
+        Session::add('feedback_negative', Text::get('FEEDBACK_USER_EMAIL_ALREADY_TAKEN'));
+        $return = false;
+    }
+
+    if (!$return) {
+        return false;
+    }
+
+    // no email activation needed
+    $user_activation_hash = null;
+
+    if (!self::writeNewUserToDatabase($user_name, $user_password_hash, $user_email, time(), $user_activation_hash)) {
+        Session::add('feedback_negative', Text::get('FEEDBACK_ACCOUNT_CREATION_FAILED'));
+        return false;
+    }
+
+    Session::add('feedback_positive', Text::get('FEEDBACK_ACCOUNT_SUCCESSFULLY_CREATED'));
+    return true;
+}
 
     /**
      * Validates the registration input
@@ -91,24 +77,18 @@ class RegistrationModel
      *
      * @return bool
      */
-    public static function registrationInputValidation($captcha, $user_name, $user_password_new, $user_password_repeat, $user_email, $user_email_repeat)
-    {
-        $return = true;
-
-        // perform all necessary checks
-        if (!CaptchaModel::checkCaptcha($captcha)) {
-            Session::add('feedback_negative', Text::get('FEEDBACK_CAPTCHA_WRONG'));
-            $return = false;
-        }
-
-        // if username, email and password are all correctly validated, but make sure they all run on first sumbit
-        if (self::validateUserName($user_name) AND self::validateUserEmail($user_email, $user_email_repeat) AND self::validateUserPassword($user_password_new, $user_password_repeat) AND $return) {
-            return true;
-        }
-
-        // otherwise, return false
-        return false;
+    public static function registrationInputValidation($user_name, $user_password_new, $user_password_repeat, $user_email, $user_email_repeat)
+{
+    if (
+        self::validateUserName($user_name) &&
+        self::validateUserEmail($user_email, $user_email_repeat) &&
+        self::validateUserPassword($user_password_new, $user_password_repeat)
+    ) {
+        return true;
     }
+
+    return false;
+}
 
     /**
      * Validates the username
@@ -201,26 +181,40 @@ class RegistrationModel
      * @return bool
      */
     public static function writeNewUserToDatabase($user_name, $user_password_hash, $user_email, $user_creation_timestamp, $user_activation_hash)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
+{
+    $database = DatabaseFactory::getFactory()->getConnection();
 
-        // write new users data into database
-        $sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_creation_timestamp, user_activation_hash, user_provider_type)
-                    VALUES (:user_name, :user_password_hash, :user_email, :user_creation_timestamp, :user_activation_hash, :user_provider_type)";
-        $query = $database->prepare($sql);
-        $query->execute(array(':user_name' => $user_name,
-                              ':user_password_hash' => $user_password_hash,
-                              ':user_email' => $user_email,
-                              ':user_creation_timestamp' => $user_creation_timestamp,
-                              ':user_activation_hash' => $user_activation_hash,
-                              ':user_provider_type' => 'DEFAULT'));
-        $count =  $query->rowCount();
-        if ($count == 1) {
-            return true;
-        }
+    $sql = "INSERT INTO users (
+                user_name,
+                user_password_hash,
+                user_email,
+                user_creation_timestamp,
+                user_activation_hash,
+                user_active,
+                user_provider_type
+            )
+            VALUES (
+                :user_name,
+                :user_password_hash,
+                :user_email,
+                :user_creation_timestamp,
+                :user_activation_hash,
+                1,
+                :user_provider_type
+            )";
 
-        return false;
-    }
+    $query = $database->prepare($sql);
+    $query->execute(array(
+        ':user_name' => $user_name,
+        ':user_password_hash' => $user_password_hash,
+        ':user_email' => $user_email,
+        ':user_creation_timestamp' => $user_creation_timestamp,
+        ':user_activation_hash' => $user_activation_hash,
+        ':user_provider_type' => 'DEFAULT'
+    ));
+
+    return $query->rowCount() == 1;
+}
 
     /**
      * Deletes the user from users table. Currently used to rollback a registration when verification mail sending

@@ -20,14 +20,15 @@ class RegisterController extends Controller
      * Register page
      * Show the register form, but redirect to main-page if user is already logged-in
      */
-    public function index()
-    {
-        if (LoginModel::isUserLoggedIn()) {
-            Redirect::home();
-        } else {
-            $this->View->render('register/index');
-        }
+public function index()
+{
+    if (!LoginModel::isUserLoggedIn() || Session::get("user_account_type") != 7) {
+        Redirect::home();
+        exit;
     }
+
+    $this->View->render('register/index');
+}
 
     /**
      * Register page action
