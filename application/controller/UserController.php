@@ -106,29 +106,44 @@ class UserController extends Controller
     /**
      * Show the change-account-type page
      */
-    public function changeUserRole()
-    {
-        $this->View->render('user/changeUserRole');
+public function changeUserRole()
+{
+    if (Session::get('user_account_type') != 7) {
+        Redirect::home();
+        exit;
     }
+
+    $users = UserRoleModel::getAllUsersWithGroups();
+    $groups = UserRoleModel::getAllGroups();
+
+    $this->View->render('user/changeUserRole', array(
+        'users' => $users,
+        'groups' => $groups
+    ));
+}
 
     /**
      * Perform the account-type changing
      * POST-request
      */
-    public function changeUserRole_action()
-    {
-        if (Request::post('user_account_upgrade')) {
-            // "2" is quick & dirty account type 2, something like "premium user" maybe. you got the idea :)
-            UserRoleModel::changeUserRole(2);
-        }
-
-        if (Request::post('user_account_downgrade')) {
-            // "1" is quick & dirty account type 1, something like "basic user" maybe.
-            UserRoleModel::changeUserRole(1);
-        }
-
-        Redirect::to('user/changeUserRole');
+public function changeUserRole_action()
+{
+    if (Session::get('user_account_type') != 7) {
+        Redirect::home();
+        exit;
     }
+
+    $user_id = Request::post('user_id');
+    $new_type = Request::post('user_account_type');
+
+    if (UserRoleModel::changeUserRoleByAdmin($user_id, $new_type)) {
+        Session::add('feedback_positive', 'User role successfully changed.');
+    } else {
+        Session::add('feedback_negative', 'User role could not be changed.');
+    }
+
+    Redirect::to('user/changeUserRole');
+}
 
     /**
      * Password Change Page
@@ -154,4 +169,14 @@ class UserController extends Controller
         else
             Redirect::to('user/changePassword');
     }
+
+public function userlist()
+{
+    $users = UserRoleModel::getAllUsersWithGroups();
+
+    $this->View->render('user/userlist', array(
+        'users' => $users
+    ));
+}
+
 }

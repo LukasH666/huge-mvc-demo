@@ -62,4 +62,65 @@ class UserRoleModel
 
         return false;
     }
+
+public static function getAllGroups()
+{
+    $database = DatabaseFactory::getFactory()->getConnection();
+
+    $sql = "SELECT * FROM user_groups ORDER BY group_id ASC";
+    $query = $database->prepare($sql);
+    $query->execute();
+
+    return $query->fetchAll();
+}
+
+public static function getAllUsersWithGroups()
+{
+    $database = DatabaseFactory::getFactory()->getConnection();
+
+    $sql = "SELECT users.user_id,
+                   users.user_name,
+                   users.user_email,
+                   users.user_active,
+                   users.user_account_type,
+                   users.user_deleted,
+                   user_groups.group_name
+            FROM users
+            LEFT JOIN user_groups
+            ON users.user_account_type = user_groups.group_id
+            ORDER BY users.user_id ASC";
+
+    $query = $database->prepare($sql);
+    $query->execute();
+
+    return $query->fetchAll();
+}
+
+public static function changeUserRoleByAdmin($user_id, $new_type)
+{
+    if (!Session::userIsLoggedIn() || Session::get('user_account_type') != 7) {
+        return false;
+    }
+
+    if (!$user_id || !$new_type) {
+        return false;
+    }
+
+    $database = DatabaseFactory::getFactory()->getConnection();
+
+    $query = $database->prepare("
+        UPDATE users
+        SET user_account_type = :new_type
+        WHERE user_id = :user_id
+        LIMIT 1
+    ");
+
+    $query->execute(array(
+        ':new_type' => $new_type,
+        ':user_id' => $user_id
+    ));
+
+    return $query->rowCount() == 1;
+}
+
 }

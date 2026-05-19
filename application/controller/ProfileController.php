@@ -14,12 +14,12 @@ class ProfileController extends Controller
      * This method controls what happens when you move to /overview/index in your app.
      * Shows a list of all users.
      */
-    public function index()
-    {
-        $this->View->render('profile/index', array(
-            'users' => UserModel::getPublicProfilesOfAllUsers())
-        );
-    }
+public function index()
+{
+    $this->View->render('profile/index', array(
+        'users' => UserRoleModel::getAllUsersWithGroups()
+    ));
+}
 
     /**
      * This method controls what happens when you move to /overview/showProfile in your app.

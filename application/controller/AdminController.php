@@ -17,19 +17,47 @@ class AdminController extends Controller
     /**
      * This method controls what happens when you move to /admin or /admin/index in your app.
      */
-    public function index()
-    {
-        $this->View->render('admin/index', array(
-                'users' => UserModel::getPublicProfilesOfAllUsers())
-        );
-    }
+public function index()
+{
+    $this->View->render('admin/index', array(
+        'users' => UserRoleModel::getAllUsersWithGroups(),
+        'groups' => UserRoleModel::getAllGroups()
+    ));
+}
 
     public function actionAccountSettings()
-    {
-        AdminModel::setAccountSuspensionAndDeletionStatus(
-            Request::post('suspension'), Request::post('softDelete'), Request::post('user_id')
-        );
+{
+    AdminModel::setAccountSuspensionAndDeletionStatus(
+        Request::post('suspension'),
+        Request::post('softDelete'),
+        Request::post('user_id')
+    );
 
-        Redirect::to("admin");
+    UserRoleModel::changeUserRoleByAdmin(
+        Request::post('user_id'),
+        Request::post('user_account_type')
+    );
+
+    Redirect::to("admin");
+}
+
+public function changeUserRole_action()
+{
+    if (Session::get('user_account_type') != 7) {
+        Redirect::home();
+        exit;
     }
+
+    $user_id = Request::post('user_id');
+    $new_type = Request::post('user_account_type');
+
+    if (UserRoleModel::changeUserRoleByAdmin($user_id, $new_type)) {
+        Session::add('feedback_positive', 'User role successfully changed.');
+    } else {
+        Session::add('feedback_negative', 'User role could not be changed.');
+    }
+
+    Redirect::to('admin/index');
+}
+
 }
