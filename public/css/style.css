@@ -266,3 +266,54 @@ body {
 .red-text {
     color: red;
 }
+
+.badge {
+    background: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 7px;
+    font-size: 12px;
+}
+
+.messenger {
+    display: flex;
+    gap: 20px;
+}
+
+.messenger-users {
+    width: 25%;
+    border-right: 1px solid #ccc;
+}
+
+.messenger-chat {
+    width: 75%;
+}
+
+.messages {
+    display: flex;
+    flex-direction: column;
+}
+
+.msg-other {
+    background: #eee;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px;
+    max-width: 60%;
+    align-self: flex-start;
+}
+
+.msg-own {
+    background: #5b9bd5;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px;
+    max-width: 60%;
+    align-self: flex-end;
+}
+
+.messenger-chat textarea {
+    width: 100%;
+    height: 80px;
+}

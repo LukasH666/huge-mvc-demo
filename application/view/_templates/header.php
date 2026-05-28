@@ -28,6 +28,15 @@
                 <li <?php if (View::checkForActiveController($filename, "dashboard")) { echo ' class="active" '; } ?> >
                     <a href="<?php echo Config::get('URL'); ?>dashboard/index">Dashboard</a>
                 </li>
+                <li <?php if (View::checkForActiveController($filename, "message")) { echo ' class="active" '; } ?> >
+    <a href="<?php echo Config::get('URL'); ?>message/index">
+        Messenger
+        <?php $unread = MessageModel::countUnread(); ?>
+        <?php if ($unread > 0) { ?>
+            <span class="badge"><?php echo $unread; ?></span>
+        <?php } ?>
+    </a>
+</li>
                 <li <?php if (View::checkForActiveController($filename, "note")) { echo ' class="active" '; } ?> >
                     <a href="<?php echo Config::get('URL'); ?>note/index">My Notes</a>
                 </li>
