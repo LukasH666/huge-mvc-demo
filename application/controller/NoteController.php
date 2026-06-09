@@ -74,4 +74,16 @@ class NoteController extends Controller
         NoteModel::deleteNote($note_id);
         Redirect::to('note');
     }
+
+public function testMysqli($note_id)
+{
+    echo "Testfunktion wurde aufgerufen<br>";
+
+    $note = NoteModel::getNoteMysqli($note_id);
+
+    echo "<pre>";
+    var_dump($note);
+    echo "</pre>";
+    exit;
+}
 }

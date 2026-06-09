@@ -39,6 +39,51 @@ class NoteModel
         return $query->fetch();
     }
 
+public static function getNoteMysqli($note_id)
+{
+    $connection = new mysqli(
+        Config::get('DB_HOST'),
+        Config::get('DB_USER'),
+        Config::get('DB_PASS'),
+        Config::get('DB_NAME'),
+        (int) Config::get('DB_PORT')
+    );
+
+    if ($connection->connect_error) {
+        return false;
+    }
+
+    $sql = "SELECT user_id, note_id, note_text
+            FROM notes
+            WHERE user_id = ?
+            AND note_id = ?
+            LIMIT 1";
+
+    $statement = $connection->prepare($sql);
+
+    $user_id = Session::get('user_id');
+
+    $statement->bind_param("ii", $user_id, $note_id);
+
+    $statement->execute();
+
+    $statement->bind_result($user_id_result, $note_id_result, $note_text_result);
+
+    if ($statement->fetch()) {
+        $note = new stdClass();
+        $note->user_id = $user_id_result;
+        $note->note_id = $note_id_result;
+        $note->note_text = $note_text_result;
+    } else {
+        $note = false;
+    }
+
+    $statement->close();
+    $connection->close();
+
+    return $note;
+}
+
     /**
      * Set a note (create a new one)
      * @param string $note_text note text that will be created
