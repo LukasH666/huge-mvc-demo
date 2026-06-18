@@ -84,10 +84,17 @@ public static function getAllUsersWithGroups()
                    users.user_active,
                    users.user_account_type,
                    users.user_deleted,
-                   user_groups.group_name
+                   user_groups.group_name,
+                   user_profiles.bio,
+                   user_profiles.location,
+                   user_profiles.hobby,
+                   user_profiles.birthday,
+                   user_profiles.profile_picture_filename
             FROM users
             LEFT JOIN user_groups
-            ON users.user_account_type = user_groups.group_id
+                ON users.user_account_type = user_groups.group_id
+            LEFT JOIN user_profiles
+                ON users.user_id = user_profiles.user_id
             ORDER BY users.user_id ASC";
 
     $query = $database->prepare($sql);

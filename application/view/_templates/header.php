@@ -60,6 +60,9 @@
             <li <?php if (View::checkForActiveController($filename, "user")) { echo ' class="active" '; } ?> >
                 <a href="<?php echo Config::get('URL'); ?>user/index">My Account</a>
                 <ul class="navigation-submenu">
+                    <li <?php if (View::checkForActiveControllerAndAction($filename, "profile/edit")) { echo ' class="active" '; } ?> >
+    <a href="<?php echo Config::get('URL'); ?>profile/edit">Edit profile</a>
+</li>
                     <li <?php if (View::checkForActiveController($filename, "user")) { echo ' class="active" '; } ?> >
                         <a href="<?php echo Config::get('URL'); ?>user/changeUserRole">Change account type</a>
                     </li>
