@@ -147,5 +147,5 @@ public function delete()
 
     header('Location: ' . Config::get('URL') . 'gallery/index');
     exit;
-}
+    }
 }
