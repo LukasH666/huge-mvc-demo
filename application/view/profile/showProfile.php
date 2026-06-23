@@ -70,7 +70,7 @@
 
         <br>
 
-        <a href="<?php echo Config::get('URL'); ?>profile/index">Zurück zur Profilübersicht</a>
+        <a class="profile-back-button" href="<?php echo Config::get('URL'); ?>profile/index">Zurück zur Profilübersicht</a>
 
     </div>
 </div>

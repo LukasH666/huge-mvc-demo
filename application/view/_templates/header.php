@@ -37,6 +37,15 @@
         <?php } ?>
     </a>
 </li>
+<li <?php if (View::checkForActiveController($filename, "friend")) { echo ' class="active" '; } ?> >
+    <a href="<?php echo Config::get('URL'); ?>friend/index">
+        Friends
+        <?php $pendingFriendRequests = FriendModel::countPendingRequests(); ?>
+        <?php if ($pendingFriendRequests > 0) { ?>
+            <span class="badge"><?php echo $pendingFriendRequests; ?></span>
+        <?php } ?>
+    </a>
+</li>
                 <li <?php if (View::checkForActiveController($filename, "note")) { echo ' class="active" '; } ?> >
                     <a href="<?php echo Config::get('URL'); ?>note/index">My Notes</a>
                 </li>
