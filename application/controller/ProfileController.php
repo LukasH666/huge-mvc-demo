@@ -40,7 +40,8 @@ public function showProfile($user_id)
 
     $this->View->render('profile/showProfile', array(
         'user' => $user,
-        'profile' => $extendedProfile
+        'profile' => $extendedProfile,
+        'posts' => ProfilePostModel::getPostsByUserId($user_id)
     ));
 }
 
@@ -51,7 +52,8 @@ public function showProfile($user_id)
     $userId = Session::get('user_id');
 
     $this->View->render('profile/edit', array(
-        'profile' => ProfileExtensionModel::getProfileByUserId($userId)
+        'profile' => ProfileExtensionModel::getProfileByUserId($userId),
+        'posts' => ProfilePostModel::getPostsByUserId($userId)
     ));
 }
 

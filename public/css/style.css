@@ -779,3 +779,540 @@ body {
 .friend-request .friend-remove-button {
     margin-left: 6px;
 }
+
+.profile-post-create-card {
+    margin-top: 25px;
+}
+
+.profile-post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 18px;
+    margin-top: 15px;
+}
+
+.profile-post-item {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.profile-post-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+}
+
+.profile-post-item img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-post-item p {
+    padding: 10px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.profile-post-item small {
+    display: block;
+    padding: 0 10px 10px 10px;
+    color: #777;
+}
+
+.profile-post-delete {
+    display: block;
+    margin: 10px;
+    padding: 8px 10px;
+    background: #a83232;
+    color: #ffffff !important;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.18s ease;
+}
+
+.profile-post-delete:hover {
+    background: #c43c3c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.18);
+    text-decoration: none;
+}
+
+.profile-instagram-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 15px;
+}
+
+.profile-instagram-post {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #eee;
+    cursor: pointer;
+}
+
+.profile-instagram-post img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.25s ease;
+}
+
+.profile-instagram-post:hover img {
+    transform: scale(1.08);
+}
+
+.profile-post-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 18px;
+    text-align: center;
+}
+
+.profile-instagram-post:hover .profile-post-overlay {
+    opacity: 1;
+}
+
+.profile-post-overlay p {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.profile-post-overlay small {
+    color: #dddddd;
+}
+
+.profile-post-delete-overlay {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 7px 12px;
+    background: #a83232;
+    color: #ffffff !important;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.18s ease;
+}
+
+.profile-post-delete-overlay:hover {
+    background: #c43c3c;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.profile-post-detail-card {
+    max-width: 850px;
+    margin: 30px auto;
+    padding: 25px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+}
+
+.profile-post-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.profile-post-detail-header h1 {
+    margin: 0;
+}
+
+.profile-post-detail-image {
+    background: #f1f1f1;
+    text-align: center;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.profile-post-detail-image img {
+    max-width: 100%;
+    max-height: 620px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+.profile-post-detail-info {
+    margin-top: 18px;
+    padding: 15px;
+    background: #f7f7f7;
+    border-radius: 6px;
+}
+
+.profile-post-detail-caption {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.empty-caption {
+    color: #777;
+}
+
+.profile-post-detail-actions {
+    margin-top: 15px;
+}
+
+.profile-post-overlay {
+    pointer-events: none;
+}
+
+.profile-post-delete-overlay {
+    pointer-events: auto;
+}
+
+.profile-post-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.profile-post-author-image img,
+.profile-post-author-placeholder {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+
+.profile-post-author-placeholder {
+    background: #ddd;
+    color: #777;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.profile-post-author-info h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.profile-post-author-info p {
+    margin: 4px 0 0 0;
+    color: #666;
+}
+
+.profile-post-detail-caption strong {
+    margin-right: 5px;
+}
+
+.profile-post-detail-caption {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.profile-post-detail-caption strong {
+    margin-right: 6px;
+    font-weight: bold;
+}
+
+.profile-post-detail-info {
+    margin-top: 18px;
+    padding: 18px;
+    background: #f7f7f7;
+    border-radius: 6px;
+}
+
+.profile-post-comments {
+    margin-top: 25px;
+    padding: 18px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.profile-post-comments h3 {
+    margin-top: 0;
+}
+
+.profile-comment-list {
+    margin-bottom: 18px;
+}
+
+.profile-comment {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-comment:last-child {
+    border-bottom: 0;
+}
+
+.profile-comment-content {
+    line-height: 1.5;
+}
+
+.profile-comment-content strong {
+    margin-right: 5px;
+}
+
+.profile-comment-content small {
+    color: #777;
+}
+
+.profile-comment-delete {
+    color: #a83232 !important;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.profile-comment-delete:hover {
+    color: #c43c3c !important;
+    text-decoration: underline;
+}
+
+.profile-comment-form {
+    margin-top: 15px;
+}
+
+.profile-comment-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    resize: vertical;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.profile-comment-form textarea:focus {
+    outline: none;
+    border-color: #333;
+    box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.12);
+}
+
+.profile-post-detail-card {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 25px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.10);
+}
+
+.profile-post-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-post-detail-image {
+    background: #111;
+    text-align: center;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.profile-post-detail-image img {
+    max-width: 100%;
+    max-height: 620px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+.profile-post-detail-info {
+    margin-top: 18px;
+    padding: 16px 18px;
+    background: #f8f8f8;
+    border-left: 4px solid #333;
+    border-radius: 8px;
+}
+
+.profile-post-detail-caption {
+    font-size: 15px;
+    line-height: 1.7;
+    margin: 0 0 10px 0;
+}
+
+.profile-post-detail-caption strong {
+    margin-right: 6px;
+}
+
+.profile-post-comments {
+    margin-top: 25px;
+    padding: 18px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.profile-post-comments h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.profile-comment-list {
+    margin-bottom: 18px;
+}
+
+.profile-comment {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #f7f7f7;
+    border-radius: 8px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.profile-comment:hover {
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10);
+}
+
+.profile-comment-content {
+    line-height: 1.55;
+    flex: 1;
+}
+
+.profile-comment-content strong {
+    margin-right: 5px;
+}
+
+.profile-comment-content small {
+    display: block;
+    margin-top: 5px;
+    color: #777;
+    font-size: 12px;
+}
+
+.profile-comment-delete {
+    color: #a83232 !important;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 5px 8px;
+    border-radius: 5px;
+    transition: all 0.18s ease;
+}
+
+.profile-comment-delete:hover {
+    background: #f3d6d6;
+    color: #c43c3c !important;
+    text-decoration: none;
+}
+
+.profile-comment-form {
+    margin-top: 18px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.profile-comment-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    resize: vertical;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    font-size: 14px;
+    min-height: 85px;
+    transition: border 0.18s ease, box-shadow 0.18s ease;
+}
+
+.profile-comment-form textarea:focus {
+    outline: none;
+    border-color: #333;
+    box-shadow: 0 0 0 3px rgba(51, 51, 51, 0.12);
+}
+
+.profile-comment-form input[type="submit"] {
+    margin-top: 10px;
+}
+
+.profile-post-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.profile-post-author-image img,
+.profile-post-author-placeholder {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    transition: transform 0.18s ease;
+}
+
+.profile-post-author-placeholder {
+    background: #ddd;
+    color: #777;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.profile-post-author-info h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.profile-post-author-info p {
+    margin: 4px 0 0 0;
+    color: #666;
+}
+
+.profile-post-author-link {
+    color: #000 !important;
+    text-decoration: none;
+}
+
+.profile-post-author-link:hover {
+    text-decoration: underline;
+}
+
+.profile-post-author-image-link {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.profile-post-author-image-link:hover img,
+.profile-post-author-image-link:hover .profile-post-author-placeholder {
+    transform: scale(1.05);
+}

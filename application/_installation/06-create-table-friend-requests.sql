@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS friend_requests (
+    request_id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    INDEX(sender_id),
+    INDEX(receiver_id),
+    INDEX(status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

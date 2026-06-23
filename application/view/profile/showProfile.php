@@ -69,7 +69,35 @@
         </div>
 
         <br>
+        <hr>
 
+        <div class="profile-view-section">
+    <h3>Beiträge</h3>
+
+    <?php if (empty($this->posts)) { ?>
+        <p class="empty-state">Dieser Benutzer hat noch keine Beiträge veröffentlicht.</p>
+    <?php } else { ?>
+        <div class="profile-instagram-grid">
+            <?php foreach ($this->posts as $post) { ?>
+                <div class="profile-instagram-post">
+                    <a href="<?php echo Config::get('URL'); ?>profilePost/show/<?php echo (int)$post->post_id; ?>">
+    <img src="<?php echo Config::get('URL'); ?>profilePost/image/<?php echo (int)$post->post_id; ?>" alt="Beitrag">
+</a>
+
+                    <div class="profile-post-overlay">
+                        <?php if (!empty($post->caption)) { ?>
+                            <p><?php echo htmlspecialchars($post->caption); ?></p>
+                        <?php } else { ?>
+                            <p>Kein Beschreibungstext vorhanden.</p>
+                        <?php } ?>
+
+                        <small><?php echo htmlspecialchars($post->created_at); ?></small>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+    <?php } ?>
+</div>
         <a class="profile-back-button" href="<?php echo Config::get('URL'); ?>profile/index">Zurück zur Profilübersicht</a>
 
     </div>

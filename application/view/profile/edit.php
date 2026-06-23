@@ -56,5 +56,66 @@
 
             <input type="submit" value="Profil speichern" class="profile-save-button">
         </form>
+        <hr>
+
+        <div class="profile-post-create-card">
+            <h2>Neuer Beitrag</h2>
+            <p class="profile-edit-info">
+                Lade ein Bild hoch und schreibe optional eine kurze Beschreibung dazu.
+            </p>
+
+            <form action="<?php echo Config::get('URL'); ?>profilePost/create"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="profile-edit-form">
+
+                <div class="profile-form-group">
+                    <label for="post_image">Bild</label>
+                    <input type="file" name="post_image" id="post_image" accept="image/jpeg,image/png,image/gif" required>
+                    <small>Erlaubt: JPG, PNG, GIF. Maximal 5 MB.</small>
+                </div>
+
+                <div class="profile-form-group">
+                    <label for="caption">Caption</label>
+                    <textarea name="caption" id="caption" rows="3" placeholder="Schreibe etwas zu deinem Beitrag..."></textarea>
+                </div>
+
+                <input type="submit" value="Beitrag veröffentlichen" class="profile-save-button">
+            </form>
+        </div>
+
+        <hr>
+
+<div class="profile-post-create-card">
+    <h2>Meine Beiträge</h2>
+
+    <?php if (empty($this->posts)) { ?>
+        <p class="empty-state">Du hast noch keine Beiträge hochgeladen.</p>
+    <?php } else { ?>
+        <div class="profile-instagram-grid">
+            <?php foreach ($this->posts as $post) { ?>
+                <div class="profile-instagram-post">
+                    <a href="<?php echo Config::get('URL'); ?>profilePost/show/<?php echo (int)$post->post_id; ?>">
+    <img src="<?php echo Config::get('URL'); ?>profilePost/image/<?php echo (int)$post->post_id; ?>" alt="Beitrag">
+</a>
+
+                    <div class="profile-post-overlay">
+                        <?php if (!empty($post->caption)) { ?>
+                            <p><?php echo htmlspecialchars($post->caption); ?></p>
+                        <?php } else { ?>
+                            <p>Keine Caption vorhanden.</p>
+                        <?php } ?>
+
+                        <a class="profile-post-delete-overlay"
+                           href="<?php echo Config::get('URL'); ?>profilePost/delete/<?php echo $post->post_id; ?>"
+                           onclick="return confirm('Beitrag wirklich löschen?');">
+                            Löschen
+                        </a>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+    <?php } ?>
+</div>
     </div>
 </div>

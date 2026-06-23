@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS profile_posts (
+    post_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    image_filename VARCHAR(255) NOT NULL,
+    caption TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX(user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
