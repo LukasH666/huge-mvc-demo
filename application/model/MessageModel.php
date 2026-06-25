@@ -17,35 +17,53 @@ class MessageModel
         return $result;
     }
 
-    public static function getMessages($partner_id)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
+public static function getMessages($partner_id)
+{
+    $database = DatabaseFactory::getFactory()->getConnection();
 
-        $query = $database->prepare("CALL GetMessages(:me, :partner)");
-        $query->execute(array(
-            ':me' => Session::get('user_id'),
-            ':partner' => $partner_id
-        ));
+    $sql = "SELECT message_id,
+                   sender_id,
+                   receiver_id,
+                   message_text,
+                   file_filename,
+                   file_original_name,
+                   file_mime_type,
+                   is_read,
+                   created_at
+            FROM messages
+            WHERE (sender_id = :current_user_id AND receiver_id = :partner_id)
+               OR (sender_id = :partner_id AND receiver_id = :current_user_id)
+            ORDER BY created_at ASC";
 
-        $result = $query->fetchAll();
-        $query->closeCursor();
+    $query = $database->prepare($sql);
+    $query->execute(array(
+        ':current_user_id' => Session::get('user_id'),
+        ':partner_id' => $partner_id
+    ));
 
-        return $result;
-    }
+    return $query->fetchAll();
+}
 
-    public static function sendMessage($receiver_id, $message_text)
-    {
-        $database = DatabaseFactory::getFactory()->getConnection();
+public static function sendMessage($receiver_id, $message_text, $file_filename = null, $file_original_name = null, $file_mime_type = null)
+{
+    $database = DatabaseFactory::getFactory()->getConnection();
 
-        $query = $database->prepare("CALL SendMessage(:sender_id, :receiver_id, :message_text)");
-        $query->execute(array(
-            ':sender_id' => Session::get('user_id'),
-            ':receiver_id' => $receiver_id,
-            ':message_text' => $message_text
-        ));
+    $sql = "INSERT INTO messages 
+            (sender_id, receiver_id, message_text, file_filename, file_original_name, file_mime_type)
+            VALUES 
+            (:sender_id, :receiver_id, :message_text, :file_filename, :file_original_name, :file_mime_type)";
 
-        $query->closeCursor();
-    }
+    $query = $database->prepare($sql);
+
+    return $query->execute(array(
+        ':sender_id' => Session::get('user_id'),
+        ':receiver_id' => $receiver_id,
+        ':message_text' => $message_text,
+        ':file_filename' => $file_filename,
+        ':file_original_name' => $file_original_name,
+        ':file_mime_type' => $file_mime_type
+    ));
+}
 
     public static function countUnread()
     {
@@ -218,4 +236,29 @@ class MessageModel
 
         $query->closeCursor();
     }
+
+    public static function getMessageById($message_id)
+{
+    $database = DatabaseFactory::getFactory()->getConnection();
+
+    $sql = "SELECT message_id,
+                   sender_id,
+                   receiver_id,
+                   message_text,
+                   file_filename,
+                   file_original_name,
+                   file_mime_type,
+                   is_read,
+                   created_at
+            FROM messages
+            WHERE message_id = :message_id
+            LIMIT 1";
+
+    $query = $database->prepare($sql);
+    $query->execute(array(
+        ':message_id' => $message_id
+    ));
+
+    return $query->fetch();
+}
 }
