@@ -7,9 +7,7 @@
 class RegisterController extends Controller
 {
     /**
-     * Construct this object by extending the basic Controller class. The parent::__construct thing is necessary to
-     * put checkAuthentication in here to make an entire controller only usable for logged-in users (for sure not
-     * needed in the RegisterController).
+     * Construct this object by extending the basic Controller class.
      */
     public function __construct()
     {
@@ -18,17 +16,17 @@ class RegisterController extends Controller
 
     /**
      * Register page
-     * Show the register form, but redirect to main-page if user is already logged-in
+     * Only admins are allowed to create new users.
      */
-public function index()
-{
-    if (!LoginModel::isUserLoggedIn() || Session::get("user_account_type") != 7) {
-        Redirect::home();
-        exit;
-    }
+    public function index()
+    {
+        if (!LoginModel::isUserLoggedIn() || Session::get("user_account_type") != 7) {
+            Redirect::home();
+            exit;
+        }
 
-    $this->View->render('register/index');
-}
+        $this->View->render('register/index');
+    }
 
     /**
      * Register page action
@@ -36,6 +34,14 @@ public function index()
      */
     public function register_action()
     {
+        $recaptchaResponse = Request::post('g-recaptcha-response');
+
+        if (!ReCaptchaModel::verify($recaptchaResponse)) {
+            Session::add('feedback_negative', 'Bitte bestätige reCAPTCHA.');
+            Redirect::to('register/index');
+            return;
+        }
+
         $registration_successful = RegistrationModel::registerNewUser();
 
         if ($registration_successful) {
@@ -47,6 +53,7 @@ public function index()
 
     /**
      * Verify user after activation mail link opened
+     *
      * @param int $user_id user's id
      * @param string $user_activation_verification_code user's verification token
      */
@@ -58,18 +65,5 @@ public function index()
         } else {
             Redirect::to('login/index');
         }
-    }
-
-    /**
-     * Generate a captcha, write the characters into $_SESSION['captcha'] and returns a real image which will be used
-     * like this: <img src="......./login/showCaptcha" />
-     * IMPORTANT: As this action is called via <img ...> AFTER the real application has finished executing (!), the
-     * SESSION["captcha"] has no content when the application is loaded. The SESSION["captcha"] gets filled at the
-     * moment the end-user requests the <img .. >
-     * Maybe refactor this sometime.
-     */
-    public function showCaptcha()
-    {
-        CaptchaModel::generateAndShowCaptcha();
     }
 }
